@@ -30,7 +30,7 @@ func handler(req events.Request) (events.Response, error) {
 	if hookID == "" {
 		return events.Fail("hook id not set")
 	}
-	h, ok := config.Hooks[hookID]
+	h, ok := c.Hooks[hookID]
 	if !ok {
 		return events.Fail(fmt.Sprintf("hook not found in config: %s", hookID))
 	}
@@ -39,16 +39,17 @@ func handler(req events.Request) (events.Response, error) {
 	client := http.Client{}
 
 	for _, t := range h.Targets {
-		req, err := http.NewRequest(t.Method, t.URL, nil)
+		targetReq, err := http.NewRequest(t.Method, t.URL, nil)
 		if err != nil {
 			return events.Fail(fmt.Sprintf("failed to parse request: %s", t.URL))
 		}
-		_, err = client.Do(req)
+		_, err = client.Do(targetReq)
 		if err != nil {
 			return events.Fail(fmt.Sprintf("failed to hit url: %s (%s)", t.URL, err))
 		}
 	}
 	log.Printf("successfully hit %d urls", len(h.Targets))
+	return events.Succeed(fmt.Sprintf("Processed %d URLs", len(h.Targets)))
 }
 
 func loadConfig() {
