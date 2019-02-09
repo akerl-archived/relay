@@ -1,0 +1,3 @@
+PACKAGE = relay
+NAMESPACE = github.com/akerl
+OSLIST = linux
