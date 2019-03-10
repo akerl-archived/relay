@@ -15,7 +15,7 @@ before_install:
 script: make
 deploy:
   provider: script
-  script: make release && aws s3 cp pkg/payload.zip "s3://$BUCKET/lambdas/payload-$TRAVIS_TAG.zip"
+  script: make release && aws s3 cp pkg/payload.zip "s3://$BUCKET/$TRAVIS_TAG.zip"
   skip_cleanup: true
   on:
     tags: true
